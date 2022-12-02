@@ -30,6 +30,15 @@ export const zodtestModelMultiLevel = z.object({
       hausenumber: z.number({
         invalid_type_error: "Number is a type"
       }),
+      data: z.object({
+        city: z.string({
+          invalid_type_error: "String is a type"
+        }),
+        hausenumber: z.number({
+          invalid_type_error: "Number is a type"
+        }),
+      })
+      ,
     })
   }),
 });

@@ -22,7 +22,7 @@ app.post("/zodTestSingleLevel",
   }
 );
 
-app.post("/zodTestMultiLevel",
+app.post("/zodTestMultimercedesLevel",
 express_validateMultiLevel(zodtestModelMultiLevel),
   (req: Request, res: Response): Response => {
     return res.json({ ...req.body });
