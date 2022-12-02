@@ -4,6 +4,7 @@
   "description": "",
   "main": "dist/app.js",
   "dependencies": {
+    "concurrently": "^7.6.0",
     "express": "^4.18.2",
     "nodemon": "^2.0.20",
     "typescript": "^4.9.3",
@@ -21,7 +22,8 @@
   "scripts": {
     "build": "tsc",
     "start": "tsc & node .",
-    "dev": "tsc -w & nodemon ."
+    "dev": "concurrently \"npx tsc -w\" \"nodemon -q dist/app.js\"",
+    "dev2": "tsc -w && nodemon ."
   },
   "author": "",
   "license": "ISC"
