@@ -1,33 +1,46 @@
 import express, { Request, Response, NextFunction } from "express";
-import {express_validateMultiLevel, express_validateSingleLevel} from "./utils/validator"
-import {zodtestModelMultiLevel, zodtestModelSingleLevel} from "./models/zodtestModel"
-
+import  * as zodUtils  from "./utils/zodUtils"
+import * as zod from "zod";
+import * as schema from "./models/testModels";
 
 const app = express();
 
 app.use(express.json());
 
-
-
-
-app.get("/", (req: Request, res: Response): Response => {
-  return res.json({ message: "Validation with Zod" });
+const fullnameSchema = zod.string();
+const ageSchema = zod.string();
+const dataSchema = zod.object({
+  username: zod.string(),
+  password: zod.string()
 });
 
+app.get('/test', (req, res) => {
+  const fullName = "Kiss Pista";
+  const age = 12;
+  const data = { username: "Test", password: "asda2123" };
 
-app.post("/zodTestSingleLevel",
-  express_validateSingleLevel(zodtestModelSingleLevel),
-  (req: Request, res: Response): Response => {
-    return res.json({ ...req.body });
-  }
-);
+  const stringValid = zodUtils.zodValidator(fullName, fullnameSchema);
+  const numberValid = zodUtils.zodValidator(age, ageSchema);
+  const objValid = zodUtils.zodValidator(data, dataSchema);
+  //----------------------------------------------------
+  const stringValiderr = zodUtils.zodValidator(age, fullnameSchema);
+  const numberValiderr = zodUtils.zodValidator(data, ageSchema);
+  const objValiderr = zodUtils.zodValidator(fullName, dataSchema);
 
-app.post("/zodTestMultimercedesLevel",
-express_validateMultiLevel(zodtestModelMultiLevel),
-  (req: Request, res: Response): Response => {
-    return res.json({ ...req.body });
-  }
-);
+  res.status(200).json({
+    succes: {
+      string: stringValid,
+      num: numberValid,
+      obj: objValid
+    },
+  //----------------------------------------------------
+    error: {
+      string: stringValiderr,
+      num: numberValiderr,
+      obj: objValiderr
+    }
+  })
+})
 
 
 const start = (): void => {
