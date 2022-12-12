@@ -1,6 +1,7 @@
-import * as zod from "zod";
+import * as Zod from "zod";
 
-export function zodValidator<T>(variable: unknown, schema: zod.ZodType): T | unknown {
+export const zod = Zod;
+export function zodValidator<T>(variable: unknown, schema: Zod.ZodType): T | unknown {
     // helperDebug.debug('zod','validator2:'+variable)
     try {
         return schema.parse(variable)

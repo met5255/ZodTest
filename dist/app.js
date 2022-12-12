@@ -1,55 +1,66 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
 };
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const zod_1 = require("zod");
+const zodUtils = __importStar(require("./utils/zodUtils"));
 const app = (0, express_1.default)();
+const utilsZod = zodUtils.zod;
 app.use(express_1.default.json());
-const User = zod_1.z.object({
-    username: zod_1.z.string(),
+const fullnameSchema = utilsZod.string();
+const ageSchema = utilsZod.string();
+const dataSchema = utilsZod.object({
+    username: utilsZod.string(),
+    password: utilsZod.string()
 });
-console.log(User.parse({ username: 12 }));
-const dataSchema = zod_1.z.object({
-    body: zod_1.z.object({
-        name: zod_1.z.string({
-            required_error: "Name is required",
-            invalid_type_error: "String is a type"
-        }),
-        number: zod_1.z.number({
-            required_error: "Number is required",
-            invalid_type_error: "Number is a type"
-        })
-    }),
-});
-const validate = (schema) => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        yield schema.parseAsync({
-            body: req.body,
-            query: req.query,
-            params: req.params,
-        });
-        return next();
-    }
-    catch (error) {
-        return res.status(400).json(error);
-    }
-});
-app.get("/", (req, res) => {
-    return res.json({ message: "Validation with Zod" });
-});
-app.post("/create", validate(dataSchema), (req, res) => {
-    return res.json(Object.assign({}, req.body));
+app.get('/test', (req, res) => {
+    const fullName = "Kiss Pista";
+    const age = 12;
+    const data = { username: "Test", password: "asda2123" };
+    const stringValid = zodUtils.zodValidator(fullName, fullnameSchema);
+    const numberValid = zodUtils.zodValidator(age, ageSchema);
+    const objValid = zodUtils.zodValidator(data, dataSchema);
+    //----------------------------------------------------
+    const stringValiderr = zodUtils.zodValidator(age, fullnameSchema);
+    const numberValiderr = zodUtils.zodValidator(data, ageSchema);
+    const objValiderr = zodUtils.zodValidator(fullName, dataSchema);
+    res.status(200).json({
+        succes: {
+            string: stringValid,
+            num: numberValid,
+            obj: objValid
+        },
+        //----------------------------------------------------
+        error: {
+            string: stringValiderr,
+            num: numberValiderr,
+            obj: objValiderr
+        }
+    });
 });
 const start = () => {
     try {

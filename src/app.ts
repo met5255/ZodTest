@@ -1,17 +1,16 @@
 import express, { Request, Response, NextFunction } from "express";
 import  * as zodUtils  from "./utils/zodUtils"
-import * as zod from "zod";
-import * as schema from "./models/testModels";
+
 
 const app = express();
-
+const utilsZod = zodUtils.zod
 app.use(express.json());
 
-const fullnameSchema = zod.string();
-const ageSchema = zod.string();
-const dataSchema = zod.object({
-  username: zod.string(),
-  password: zod.string()
+const fullnameSchema = utilsZod.string();
+const ageSchema = utilsZod.string();
+const dataSchema = utilsZod.object({
+  username: utilsZod.string(),
+  password: utilsZod.string()
 });
 
 app.get('/test', (req, res) => {
